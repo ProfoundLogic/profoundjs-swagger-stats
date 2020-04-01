@@ -13,17 +13,6 @@
     var pluginTemplates = {
         nav: '<nav class="navbar navbar-default navbar-fixed-top"> \
                  <div class="container-fluid"> \
-                    <div class="navbar-header"> \
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"> \
-                            <span class="sr-only">Toggle navigation</span> \
-                            <span class="icon-bar"></span> \
-                            <span class="icon-bar"></span> \
-                            <span class="icon-bar"></span> \
-                        </button> \
-                        <a class="navbar-brand" href="http://swaggerstats.io" target="_blank" data-toggle="tooltip" title="swaggerstats.io">\
-                            <span class="sws-logo">{<i class="fa fa-signal"></i>}<span class="sws-logo-title">swagger-stats</span></span>\
-                        </a> \
-                    </div> \
                     <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 0.555556px;"> \
                         <ul id="sws-toolbar" class="nav navbar-nav"> \
                         </ul> \
@@ -296,10 +285,10 @@
             }
         }
 
-        var uxHtml = '<li id='+page.id +' class="sws-tool-li"><a href="./ux" style="margin-top: 8px;">' +
-            '<span class="label label-success" style="font-size: 20px;text-decoration: underline;">Try New UX!</span></a></li>';
-        var uxNav = $(uxHtml);
-        $('#sws-toolbar').append(uxNav);
+        // var uxHtml = '<li id='+page.id +' class="sws-tool-li"><a href="./ux" style="margin-top: 8px;">' +
+        //     '<span class="label label-success" style="font-size: 20px;text-decoration: underline;">Try New UX!</span></a></li>';
+        // var uxNav = $(uxHtml);
+        // $('#sws-toolbar').append(uxNav);
 
         this.subscribeEvents();
     };
