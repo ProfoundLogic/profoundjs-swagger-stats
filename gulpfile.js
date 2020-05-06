@@ -7,6 +7,7 @@ gp_minify = require('gulp-minify');
 cssBase64 = require('gulp-css-base64');
 cleanCSS = require('gulp-clean-css');
 concatCSS = require('gulp-concat-css');
+var del = require('del');
 
 var jsFiles = [
     "./node_modules/jquery/dist/jquery.min.js",
@@ -45,6 +46,15 @@ var fontFiles = [
     "./node_modules/font-awesome/fonts/*.*"
 ];
 
+gulp.task("clean", function () {
+    return del(['dist', 'ux']);
+});
+
+gulp.task("copyUX", function () {
+    return gulp.src('./node_modules/swagger-stats-ux/dist/**/*')        
+        .pipe(gulp.dest('ux/'))  
+});
+
 gulp.task('js-build', function(){
     return gulp.src(jsFiles)
         // .pipe(gp_sourcemaps.init())
@@ -80,4 +90,4 @@ gulp.task('fonts', function() {
 });
 
 //gulp.task('default', ['fonts','css-build','js-build'], function(){});
-gulp.task('default', gulp.series('fonts','css-build','js-build'));
+gulp.task('default', gulp.series('clean', 'fonts','css-build','js-build','copyUX'));
