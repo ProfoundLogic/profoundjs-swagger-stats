@@ -36,3 +36,5 @@ jsdoc
 .idea
 .vscode
 *.tgz
+
+dist
