@@ -1,0 +1,10 @@
+{
+  "name": "profoundjs-swagger-stats",
+  "version": "1.0.0",
+  "main": "index.js",
+  "contributors": [],
+  "license": "MIT",
+  "author": "Profound Logic Software",
+  "dependencies": {},
+  "devDependencies": {}
+}
