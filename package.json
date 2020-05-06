@@ -4,8 +4,8 @@
   "main": "lib/index.js",
   "contributors": [],
   "scripts": {
-    "npmpublish": "bash ./swagger-stats-dist-package/deploy.sh",
-    "build": "gulp && npm run npmpublish",
+    "publish": "gulp && bash ./swagger-stats-package/deploy.sh",
+    "build": "npm run copy:ux",
     "copy:ux": "cp -r node_modules/swagger-stats-ux/dist/* ux",
     "start": "node example/app.js",
     "testonly": "mocha -S --delay",
