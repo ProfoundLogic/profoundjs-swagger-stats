@@ -1,6 +1,6 @@
 {
   "name": "profoundjs-swagger-stats",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "lib/index.js",
   "contributors": [],
   "scripts": {
