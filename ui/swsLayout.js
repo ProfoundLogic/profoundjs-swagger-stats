@@ -3,6 +3,7 @@
  */
 
 // Definition of SWS UI Dashboard Layout
+var isSpecificRoute = document.location.search.match(/(\?|&)modfile\=/i) != null;
 
 var SWSLayout = function(){
 
@@ -20,7 +21,8 @@ var SWSLayout = function(){
         sws_payload: {},
         sws_api: {},
         sws_apiop: {},
-        sws_login: {}
+        sws_login: {},
+        pjs_popout: {}
     };
 
     SWSLayout.prototype.init = function(options){
@@ -34,6 +36,7 @@ var SWSLayout = function(){
         this.defineApiPage();
         this.defineApiOpPage();
         this.defineLoginPage();
+        this.definePopoutPage();
     };
 
     SWSLayout.prototype.defineSummaryPage = function(options){
@@ -1013,6 +1016,7 @@ var SWSLayout = function(){
                 }
             }
         };
+
         this.pages.sws_apiop = page;
     };
 
@@ -1078,4 +1082,12 @@ var SWSLayout = function(){
         this.pages.sws_login = page;
     };
 
+    SWSLayout.prototype.definePopoutPage = function(options){
+        var page = {
+            title: 'Dashboard',
+            icon: 'fa-external-link',
+            hidden: true
+        };
+        this.pages.pjs_popout = page;
+    };
 };

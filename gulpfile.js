@@ -46,6 +46,11 @@ var fontFiles = [
     "./node_modules/font-awesome/fonts/*.*"
 ];
 
+var images = [
+    "./ui/favicon.png"
+];
+
+
 gulp.task("clean", function () {
     return del(['dist', 'ux']);
 });
@@ -89,5 +94,10 @@ gulp.task('fonts', function() {
         .pipe(gulp.dest('dist/fonts/'));
 });
 
+gulp.task('images', function() {
+    return gulp.src(images)
+        .pipe(gulp.dest('dist/images'));
+});
+
 //gulp.task('default', ['fonts','css-build','js-build'], function(){});
-gulp.task('default', gulp.series('clean', 'fonts','css-build','js-build','copyUX'));
+gulp.task('default', gulp.series('clean', 'fonts', 'images', 'css-build', 'js-build', 'copyUX'));

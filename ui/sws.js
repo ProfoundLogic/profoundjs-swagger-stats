@@ -8,12 +8,21 @@
 
 	'use strict';
 
-	var pluginName = 'swaggerstatsui';
+    var pluginName = 'swaggerstatsui';
+    var isSpecificRoute = document.location.search.match(/(\?|&)modfile\=/i) != null;
+    var navMenu = isSpecificRoute ? "" : '<div class="navbar-header"> \
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"> \
+                        <span class="sr-only">Toggle navigation</span> \
+                        <span class="icon-bar"></span> \
+                        <span class="icon-bar"></span> \
+                        <span class="icon-bar"></span> \
+                    </button> \
+                  </div>';
 
     var pluginTemplates = {
-        nav: '<nav class="navbar navbar-default navbar-fixed-top"> \
-                 <div class="container-fluid"> \
-                    <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 0.555556px;"> \
+        nav: '<nav specificroute="' +  isSpecificRoute + '" class="navbar navbar-default navbar-fixed-top"> \
+                 <div class="container-fluid">' + navMenu + ' \
+                   <div id="navbar" class="navbar' + (isSpecificRoute ? "" : "-collapse collapse") + '" aria-expanded="false" style="height: 0.555556px;"> \
                         <ul id="sws-toolbar" class="nav navbar-nav"> \
                         </ul> \
                         <div class="sws-logout-ctrls pull-right" style="display: none" data-toggle="tooltip" title="Logout">\
@@ -24,7 +33,7 @@
                     </div> \
                  </div> \
                </nav>',
-        content: '<div id="sws-content" class="container-fluid page-content"></div>',
+        content: '<div id="sws-content" specificroute="' +  isSpecificRoute + '" class="container-fluid page-content"></div>',
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p class="sws-tc">Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
@@ -247,9 +256,14 @@
         for( var pageId in this.layout.pages){
             var page = this.layout.pages[pageId];
 
+            if (isSpecificRoute)
+                page.hidden = pageId != "pjs_popout";
+            
             // Add toolbar entry for the page
             page.id = pageId;
-            var navHtml = '<li id='+page.id +' class="sws-tool-li"><a href="#'+pageId+'"' +
+
+            var navHtml = '<li id='+page.id +' class="sws-tool-li"><a href="' +
+                            (isSpecificRoute && !page.hidden ? document.location.origin+document.location.pathname +'" target="_blank"' : '#'+pageId+'"') +
                           'data-toggle="tooltip" title="'+page.title+'"><i class="sws-tool-i fa '+page.icon+'"></i>' +
                           '<span class="sws-tool-title">'+page.title+'</span></a></li>';
             var pageNav = $(navHtml);
