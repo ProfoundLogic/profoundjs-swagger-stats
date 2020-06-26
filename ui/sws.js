@@ -384,19 +384,19 @@
                     return;
                 }
             }
-            console.log('Navigating to:' + window.location.hash );
+            // console.log('Navigating to:' + window.location.hash );
             that.setActive(window.location.hash);
         });
 
         // Determine startup location
         var hashLoc = window.location.hash;
-        console.log('Startup location: ' + hashLoc );
+        // console.log('Startup location: ' + hashLoc );
         if( hashLoc !== ''){
-            console.log('Starting at: ' + hashLoc );
+            // console.log('Starting at: ' + hashLoc );
             this.setActive(hashLoc);
         }else{
             var startLocHash = '#'+this.layout.startpage;
-            console.log('Starting at '+ startLocHash);
+            // console.log('Starting at '+ startLocHash);
             window.location.hash = startLocHash;
             this.setActive(startLocHash);
         }
@@ -408,6 +408,8 @@
     SWSUI.prototype.setActive = function(pageIdHash){
 
         var that = this;
+        if (!window.setActivePageIdHash)
+            window.setActivePageIdHash = SWSUI.prototype.setActive.bind(that);
 
         // Support location as #pageid=context
         var hasharray = pageIdHash.split('=',2);
@@ -419,7 +421,7 @@
             this.activePageContext = null;
         }
 
-        console.log('setActive:' + this.activePageId + ' ctx:'+ this.activePageContext);
+        // console.log('setActive:' + this.activePageId + ' ctx:'+ this.activePageContext);
 
         // Fallback to default
         if( !(this.activePageId in this.layout.pages) ){
@@ -483,7 +485,7 @@
             return;
         }
 
-        console.log('Refreshing with ' + this.refreshInterval + ' sec interval');
+        // console.log('Refreshing with ' + this.refreshInterval + ' sec interval');
         this.startProgress();
         var activeDef = this.layout.pages[this.activePageId];
         var getdataDef = activeDef.getdata;
@@ -684,7 +686,7 @@
             $(Event.target).addClass( this.pauseOrResumeRefresh() ? 'fa-pause':'fa-play');
             return;
         }
-        console.log('Setting refresh interval:' + interval);
+        // console.log('Setting refresh interval:' + interval);
         this.refreshInterval = interval;
         this.startRefresh();
         // Set active
@@ -731,12 +733,10 @@
     };
 
     SWSUI.prototype.onDataAPIOp = function(){
-        console.log('onDataAPIOp');
         this.updateAPIOp();
     };
 
     SWSUI.prototype.onChangeAPIOp = function(srcEvent){
-        console.log('onChangeAPIOp');
         var selectedOp = {};
         $('#sws_apiop_opsel').swsapiopsel('getvalue', selectedOp);
         var locHash = '#sws_apiop='+selectedOp.method+','+selectedOp.path;
@@ -1238,7 +1238,7 @@
         if(this.activePageContext==null) {
             $('#sws_apiop_opsel').swsapiopsel('getvalue', selectedOp);
             // Set artificial page context
-            console.log('Setting context to: path=' + selectedOp.path + ' method='+ selectedOp.method);
+            // console.log('Setting context to: path=' + selectedOp.path + ' method='+ selectedOp.method);
             this.activePageContext = selectedOp.method + ',' + selectedOp.path;
             this.refreshStats();
             return;
@@ -1251,7 +1251,7 @@
         selectedOp.path = vals[1];
         $('#sws_apiop_opsel').swsapiopsel('setvalue', this.activePageContext);
 
-        console.log('Selected: path=' + selectedOp.path + ' method='+ selectedOp.method);
+        // console.log('Selected: path=' + selectedOp.path + ' method='+ selectedOp.method);
         $('#sws_apiop_wPath').swswidget('setvalue', { value:'', title: selectedOp.method + ' ' + selectedOp.path, subtitle: this.getAPIOpInfoMarkup(selectedOp.path,selectedOp.method)});
 
         var opStats = null;

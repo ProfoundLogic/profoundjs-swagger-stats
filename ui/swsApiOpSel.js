@@ -93,7 +93,7 @@
             res.method = vals[0];
             res.path = vals[1];
         }
-        console.log('Selected: ' + val);
+        // console.log('Selected: ' + val);
     };
 
     SWSApiOpSel.prototype.setvalue = function(val) {

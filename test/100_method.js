@@ -203,10 +203,10 @@ setImmediate(function() {
 
                 for( var method in expected_method_values) {
                     //debug('Comparing[%s]: Expected %s Actual:%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(methodStatsCurrent[method]) );
-                    console.log('Comparing[%s]: Expected %s Actual:%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(methodStatsCurrent[method]) );
+                    // console.log('Comparing[%s]: Expected %s Actual:%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(methodStatsCurrent[method]) );
                     methodStatsCurrent.should.have.property(method);
                     var adjustedStats = swsTestUtils.getRRStatsDiff(methodStatsInitial[method],methodStatsCurrent[method]);
-                    console.log('Comparing[%s]: Expected %s Adjusted :%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(adjustedStats) );
+                    // console.log('Comparing[%s]: Expected %s Adjusted :%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(adjustedStats) );
 
                     (expected_method_values[method].requests).should.be.equal(adjustedStats.requests);
                     (expected_method_values[method].errors).should.be.equal(adjustedStats.errors);
