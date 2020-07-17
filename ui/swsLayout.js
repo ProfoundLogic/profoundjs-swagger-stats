@@ -3,7 +3,7 @@
  */
 
 // Definition of SWS UI Dashboard Layout
-var isSpecificRoute = document.location.search.match(/(\?|&)modfile\=/i) != null;
+var isSpecificRoute = document.location.hash.match(/&modFile=/) != null;
 
 var SWSLayout = function(){
 

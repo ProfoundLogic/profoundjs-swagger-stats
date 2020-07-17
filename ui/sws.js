@@ -9,7 +9,7 @@
 	'use strict';
 
     var pluginName = 'swaggerstatsui';
-    var isSpecificRoute = document.location.search.match(/(\?|&)modfile\=/i) != null;
+    var isSpecificRoute = document.location.hash.match(/&modFile=/) != null;
     var navMenu = isSpecificRoute ? "" : '<div class="navbar-header"> \
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"> \
                         <span class="sr-only">Toggle navigation</span> \
@@ -33,7 +33,12 @@
                     </div> \
                  </div> \
                </nav>',
-        content: '<div id="sws-content" specificroute="' +  isSpecificRoute + '" class="container-fluid page-content"></div>',
+        content: '<div id="sws-content" specificroute="' +  isSpecificRoute + '" class="container-fluid page-content">\
+                    <div id="route-stat-error" specificroute="' +  isSpecificRoute + '">\
+                    <img height="48" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAADhklEQVRoge2ZT2wMURzHv9+ZLTHbpf4dpMQNV5n+iUQTViNEJCJagoiDAykOThIklUhdRdMlEicOiESkJISthkizrd5xERSJpA66ndXanZ+DCmZmd+bNzk4k+rnte++37/PdN9l58waYZZb/G0bxJdLRoRe+vG0RYCOEplDWgFgGQf3MLHkIPlL4SogXGvFk3vrcMLthVzt3VQGszc0rbJtdEOwH0KhYPgbhdc1GnzGYGwvrECrAxNa1SzGdOEfwIIA5YSefYZqCqyXizPzs8LhqsXKAfHvLXgh6ASxSrfVhXCBdqezITZWiwAHENOvyDXqGwCF1t+AIcbm+aBzj4GAxyPhAAWS7aUxaiduAbK1OLzD3k0apk/2jlt9A3wBimnWTDYm7qvLJGw/++jy5Z4tKOQDcT5aMHX4rofl9S75Bz8T4y//JNkuzLvoNqhggv6l5X62v+UoIcWSivbmz0piyAb5ualkM8EL0WmpQmPm6wVxSrr9sAEJ6AJQtjJHFuq51l+v0DGBtaF0+c5P6JxDwkJVe53mn9wxgJ+Qoqr/DRslcm8Uurw5XAOmGBsG+2jupwgPS0aE7W10BCs9aWgEsj8VJjcbC+BvT2eheAWBjPD7q2BrTzjZXABtoikdHHQr9V4DAqnh01BHIameb17/QshhcQkKXm1eA+hhMwpJyNvhu5v51vALkY7cIzoSzwSvApxhEQiIuN/e/kPBVPDLqkHzpbHOvAGU0FpsQiA2Xm3sFyIF4dNQhxeXmCjBvfW4YwPtYjNR4Z7SNuFbA86E+n249D8rJ2jsFR4CeVHb4lLPd8z6g2egDMF1zq+BM6aJnvDo8AxiDuTEKrtbWKTgUXDEGhj549SXKFRXr9NP699IuEEvDTBrBudAvxkvE2XKdZbcSCx4OfRHyeNhZo0LAw5UOfSvuhVLZ3A0hLkevFQwKelPZ3O1KY3w3c/ULVx4V4E50WoG5Z9jGCb9BCoe7+i0A26rWCkZ/0tJ3c2io4Dcw0Haa/aNWsmTsoOBS9W4+cwl6kyVjZxB5IMQLjon25k4K+xD9qd1nAbv8rnknyg80qccjt0oJfTUhfQCmVOs9+EZBb3FqzhpVeaDal3zpdY0/T8y4H8AKxfJ3QlzTWJdJPnr+MaxDNK9Zu6EVnjY12RrTFJo/Tw/YiN/P13kAYwRei+AFKQNG28hoFK9ZZ5nlf+cHh2YMk/LEzMEAAAAASUVORK5CYII=" alt="Error">\
+                    <div><div><b id="route-stat-error-title"></b></div><div><div id="route-stat-error-msg"></div></div></div>\
+                    </div>\
+                  </div>',
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p class="sws-tc">Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
@@ -42,7 +47,6 @@
                     </div> \
                 </footer>'
     };
-
 
 	var _default = {};
 
@@ -65,6 +69,7 @@
         this.activePageId = null;
         // Active Page Context ( #pageid=context)
         this.activePageContext = null;
+        this.activeRouteContext = null;
 
         // Auto-refresh interval, 60 seconds by default
         this.refreshInterval = 60;
@@ -229,6 +234,7 @@
         // Active Page Id
         this.activePageId = null;
         this.activePageContext = null;
+        this.activeRouteContext = null;
 
         this.destroy();
         this.render();
@@ -411,6 +417,11 @@
         if (!window.setActivePageIdHash)
             window.setActivePageIdHash = SWSUI.prototype.setActive.bind(that);
 
+        if (typeof pageIdHash == "string" && pageIdHash.startsWith("#&routeKey=")) {
+            this.activePageId = "sws_apiop";
+            this.activeRouteContext = pageIdHash.substring(1);
+        } else {
+
         // Support location as #pageid=context
         var hasharray = pageIdHash.split('=',2);
         if( hasharray.length > 1){
@@ -421,6 +432,7 @@
             this.activePageContext = null;
         }
 
+        }
         // console.log('setActive:' + this.activePageId + ' ctx:'+ this.activePageContext);
 
         // Fallback to default
@@ -510,11 +522,23 @@
             }
         }
 
+        if (this.activeRouteContext) {
+            // this.activeRouteContext = "&routeKey=post&modFile=dir1/dir2/file.zzz.zzz"
+            var parts = this.activeRouteContext.split("&");
+            parts.shift();
+            for(var pCnt=0;pCnt<parts.length;pCnt++) {
+                // parts[0] = "routeKey=post"
+                // parts[1] = "modFile=dir1/dir2/file.zzz.zzz"
+                var pParts = parts[pCnt].split("=");
+                getdataReq.data[pParts[0]]=pParts[1];
+            }
+        }
+
         // Post-process getDataReq, if necessary
         if('getdataproc' in activeDef){
             activeDef.getdataproc(this.activePageId, this.activePageContext, getdataReq);
         }
-
+        
         // Add login credentials, if specified
         var isLoginAttempt = false;
         if( (this.loginUsername!=='') && (this.loginPassword!=='')){
@@ -538,10 +562,21 @@
                     $('.sws-logout-ctrls').show();
                 }
 
-                // process received data as needed
-                that.processStatsData( getdataDef, msg );
+                if (isSpecificRoute && msg.code) {
+                    $("#sws_apiop_content").hide();
+                    $("#route-stat-error").show();
+                    $("#route-stat-error-title").text(msg.title);
+                    $("#route-stat-error-msg").text(msg.message);
+                    that.updateTimeControls();
+                } else {
+                    $("#route-stat-error").hide();
+                    $("#sws_apiop_content").show();
 
-                that.$element.trigger(activeDef.datevent, that);
+                    // process received data as needed
+                    that.processStatsData( getdataDef, msg );
+                    that.$element.trigger(activeDef.datevent, that);
+                }
+
                 that.stopProgress();
             })
             .fail(function( jqXHR, textStatus ){
@@ -587,6 +622,12 @@
         // First, store received data in apistats, complimenting existing data
         for(var prop in data ){
             this.apistats[prop] = data[prop];
+        }
+
+        if (this.activeRouteContext && this.apistats) {
+            var path = Object.keys(this.apistats.apiop)[0];
+            var method = Object.keys(this.apistats.apiop[path])[0];
+            this.activePageContext = method+","+path;
         }
 
         // Update time controls
@@ -1235,7 +1276,7 @@
         var selectedOp = {};
 
         // If we're on this page without context ( op not specified ) - Take first one in a list and get stats for it
-        if(this.activePageContext==null) {
+        if(this.activePageContext==null && this.activeRouteContext==null) {
             $('#sws_apiop_opsel').swsapiopsel('getvalue', selectedOp);
             // Set artificial page context
             // console.log('Setting context to: path=' + selectedOp.path + ' method='+ selectedOp.method);
