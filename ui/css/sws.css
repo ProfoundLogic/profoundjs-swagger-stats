@@ -142,6 +142,7 @@ body {
 
 .navbar-default[specificroute="true"] .navbar-nav>li>a {
     padding: 15px 0px 0px 10px;
+    color: #fff
 }
 
 .sws-logo {

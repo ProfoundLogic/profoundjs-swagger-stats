@@ -570,7 +570,8 @@
                     that.updateTimeControls();
                 } else {
                     $("#route-stat-error").hide();
-                    $("#sws_apiop_content").show();
+                    if (this.activePageId == "sws_apiop")
+                        $("#sws_apiop_content").show();
 
                     // process received data as needed
                     that.processStatsData( getdataDef, msg );
