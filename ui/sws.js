@@ -63,6 +63,7 @@
         this.loggingIn = false;
         this.loginUsername = '';
         this.loginPassword = '';
+        this.sessionID = '';
 
 
         // Active Page Id
@@ -552,14 +553,23 @@
             isLoginAttempt=true;
         }
 
+        if (this.sessionID) {
+            if(!('headers' in getdataReq)){
+                getdataReq.headers = {};
+            }
+            getdataReq.headers['sws-session-id'] = this.sessionID;
+        }
+
         var that = this;
         var jqxhr = $.ajax( getdataReq )
             .done(function( msg ) {
 
                 // Login attempt successfull
                 var xswsauth = jqxhr.getResponseHeader('x-sws-authenticated');
-                if( (xswsauth !== undefined) && xswsauth && (xswsauth=='true') ){
-                    $('.sws-logout-ctrls').show();
+                if((xswsauth !== undefined) && xswsauth && (xswsauth=='true') ){
+                    that.sessionID = jqxhr.getResponseHeader('sws-session-id') || that.sessionID;
+                    if (!isSpecificRoute)
+                        $('.sws-logout-ctrls').show();
                 }
 
                 if (isSpecificRoute && msg.code) {
@@ -699,6 +709,7 @@
     SWSUI.prototype.onLogout = function(Event) {
 
         var getdataURL = 'logout';
+        this.sessionID = null;
         if(this.swsBasePath !== null ) {
             getdataURL = this.swsBasePath + '/logout';
         }
