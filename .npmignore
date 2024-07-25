@@ -1,4 +1,3 @@
-*.tgz
 .git*
 .js*
 .idea*
@@ -6,5 +5,3 @@ test/
 ui/
 screenshots/
 .c9/
-
-README.md

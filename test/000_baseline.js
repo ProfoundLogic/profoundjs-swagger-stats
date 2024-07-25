@@ -23,50 +23,6 @@ var swsInterface = require('../lib/swsInterface');
 // SWS API Stats
 var swsAPIStats = require('../lib/swsAPIStats');
 
-var uiMarkup = swsUtil.swsEmbeddedUIMarkup;
-
-// All files from /dist
-var distFiles = [];
-
-function readFiles(basePath, folder) {
-
-    var files = fs.readdirSync( path.join(basePath, folder) );
-
-    for(var i=0;i<files.length;i++){
-
-        var fn = files[i];
-
-        var fileContent = fs.readFileSync( path.join(basePath, folder, fn) );
-
-        var fileUrl = folder + '/' + fn;
-        var contentType = '';
-        if( fn.endsWith('css') ) contentType = /css/;
-        if( fn.endsWith('js') ) contentType = /javascript/;
-        if( fn.endsWith('woff') ) contentType = /woff/;
-        if( fn.endsWith('woff2') ) contentType = /woff2/;
-        if( fn.endsWith('otf') ) contentType = /otf/;
-        if( fn.endsWith('svg') ) contentType = /svg/;
-        if( fn.endsWith('ttf') ) contentType = /ttf/;
-        if( fn.endsWith('eot') ) contentType = /fontobject/;
-        if( fn.endsWith('map') ) contentType = /json/;
-
-        var fileInfo = { url: fileUrl, contentType: contentType,  content: fileContent };
-        distFiles.push(fileInfo);
-    }
-
-}
-
-var distBasePath = path.join(__dirname,'..','dist');
-
-readFiles( distBasePath, 'js' );
-readFiles( distBasePath, 'css' );
-readFiles( distBasePath, 'fonts' );
-readFiles( distBasePath, 'maps' );
-
-// TEST UI Index file
-var testUIIndex = fs.readFileSync( path.join(__dirname,'..','ui','index.html') ).toString();
-
-
 setImmediate(function() {
 
     describe('Baseline test', function () {
@@ -99,10 +55,16 @@ setImmediate(function() {
                     .expect(200)
                     .end(function (err, res) {
                         if (err) {
-                            process.env.SWS_TEST_TIMEBUCKET = timeline_bucket_duration;
-                            app = require('../examples/testapp/testapp');
-                            api = supertest('http://localhost:' + app.app.get('port'));
-                            setTimeout(done, 500);
+                            if( res && res.status === 403 ){
+                                //let st = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL)
+                                api = supertest.agent(swsTestFixture.SWS_TEST_DEFAULT_URL).auth('swagger-stats','swagger-stats');
+                                done();
+                            } else {
+                                process.env.SWS_TEST_TIMEBUCKET = timeline_bucket_duration;
+                                app = require('../examples/testapp/testapp');
+                                api = supertest('http://localhost:' + app.app.get('port'));
+                                setTimeout(done, 500);
+                            }
                         } else {
                             api = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL);
                             done();
@@ -433,35 +395,16 @@ setImmediate(function() {
         });
 
         // Get API Stats, and check that number of requests / responses is correctly calculated
-        describe('Check Embedded UI', function () {
+        describe('Check Embedded UX', function () {
 
-            it('should return HTML for embedded UI', function (done) {
-                api.get(swsTestFixture.SWS_TEST_STATS_UI)
+            it('should return HTML for embedded UX', function (done) {
+                api.get(swsTestFixture.SWS_TEST_UX)
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .end(function (err, res) {
                         if (err) return done(err);
-                        res.text.should.be.equal(uiMarkup);
                         done();
                     });
-            });
-
-            distFiles.forEach(function(fileInfo) {
-
-                it('should return embedded UI file /dist/'+fileInfo.url, function (done) {
-                    api.get(swsTestFixture.SWS_TEST_STATS_DIST + '/' + fileInfo.url + '?test')
-                        .expect(200)
-                        .expect('Content-Type', fileInfo.contentType )
-                        .end(function (err, res) {
-                            if (err) return done(err);
-                            if('content-length' in res.header ){
-                                var cl = parseInt(res.header['content-length']);
-                                cl.should.equal(fileInfo.content.length);
-                            }
-                            done();
-                        });
-                });
-
             });
 
         });
