@@ -1,11 +1,11 @@
 {
   "name": "profound-swagger-stats",
-  "version": "1.1.5",
+  "version": "2.0.0",
   "description": "API Telemetry and APM. Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices, based on express routes and Swagger (Open API) specification",
   "main": "lib/index.js",
   "scripts": {
     "build": "npm run copy:ux",
-    "copy:ux": "ncp node_modules/swagger-stats-ux/dist ux",
+    "copy:ux": "ncp node_modules/profoundjs-swagger-stats-ux/dist ux",
     "start": "node examples/testapp/testapp.js",
     "hapitestapp": "cross-env SWS_AUTHTEST_MAXAGE=2 nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/hapitestapp node examples/hapijstest/hapijstest.js",
     "fastifytestapp": "cross-env SWS_AUTHTEST_MAXAGE=2 nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/fastifytestapp node examples/fastify/fasifytest.js",
@@ -132,7 +132,7 @@
     "should": "^13.2.3",
     "supertest": "^6.3.3",
     "swagger-parser": "^10.0.3",
-    "swagger-stats-ux": "^0.95.29",
+    "profoundjs-swagger-stats-ux": "^1.0.0",
     "request": "^2.88.2"
   }
 }
