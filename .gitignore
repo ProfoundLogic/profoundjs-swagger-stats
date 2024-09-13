@@ -35,7 +35,3 @@ jsdoc
 .c9
 .idea
 .vscode
-*.tgz
-
-dist
-ux

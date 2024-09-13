@@ -143,10 +143,16 @@ setImmediate(function() {
                     .expect(200)
                     .end(function (err, res) {
                         if (err) {
-                            process.env.SWS_TEST_TIMEBUCKET = timeline_bucket_duration;
-                            appTimelineTest = require('../examples/testapp/testapp');
-                            apiTimelineTest = supertest('http://localhost:' + appTimelineTest.app.get('port'));
-                            setTimeout(done, 500);
+                            if( res && res.status === 403 ){
+                                //let st = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL)
+                                apiTimelineTest = supertest.agent(swsTestFixture.SWS_TEST_DEFAULT_URL).auth('swagger-stats','swagger-stats');
+                                done();
+                            } else {
+                                process.env.SWS_TEST_TIMEBUCKET = timeline_bucket_duration;
+                                appTimelineTest = require('../examples/testapp/testapp');
+                                apiTimelineTest = supertest('http://localhost:' + appTimelineTest.app.get('port'));
+                                setTimeout(done, 500);
+                            }
                         } else {
                             apiTimelineTest = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL);
                             done();
@@ -203,10 +209,10 @@ setImmediate(function() {
 
                 for( var method in expected_method_values) {
                     //debug('Comparing[%s]: Expected %s Actual:%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(methodStatsCurrent[method]) );
-                    // console.log('Comparing[%s]: Expected %s Actual:%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(methodStatsCurrent[method]) );
+                    console.log('Comparing[%s]: Expected %s Actual:%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(methodStatsCurrent[method]) );
                     methodStatsCurrent.should.have.property(method);
                     var adjustedStats = swsTestUtils.getRRStatsDiff(methodStatsInitial[method],methodStatsCurrent[method]);
-                    // console.log('Comparing[%s]: Expected %s Adjusted :%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(adjustedStats) );
+                    console.log('Comparing[%s]: Expected %s Adjusted :%s', method, JSON.stringify(expected_method_values[method]),JSON.stringify(adjustedStats) );
 
                     (expected_method_values[method].requests).should.be.equal(adjustedStats.requests);
                     (expected_method_values[method].errors).should.be.equal(adjustedStats.errors);
